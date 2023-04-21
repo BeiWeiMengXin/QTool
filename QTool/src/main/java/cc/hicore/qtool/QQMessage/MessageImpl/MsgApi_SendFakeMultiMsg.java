@@ -114,8 +114,6 @@ public class MsgApi_SendFakeMultiMsg {
         Object multiRequest = MClass.NewInstance(MClass.loadClass("com.tencent.mobileqq.multimsg.h"));
         Object struct = QQMsgBuilder.build_struct(fakeMsgXML);
         Object structContainer = QQMsgBuilder.build_MessageForStruct(struct, QQSessionUtils.Build_SessionInfo(fakeGroup, fakeUin));
-        Field f = MField.FindFirstField(MClass.loadClass("com.tencent.mobileqq.multimsg.h"), MClass.loadClass("com.tencent.mobileqq.data.MessageForStructing"));
-        f.set(multiRequest, structContainer);
 
         HashMap<String, String> uinContainer = new HashMap<>();
         if (!TextUtils.isEmpty(fakeName)) {
@@ -124,12 +122,14 @@ public class MsgApi_SendFakeMultiMsg {
             uinContainer.put(fakeUin, QQGroupUtils.Group_Get_Member_Name(fakeGroup, fakeUin));
         }
 
-        MField.SetField(multiRequest, "c", uinContainer);
         List chatMessageContainer = new ArrayList();
         chatMessageContainer.addAll(messageRecords);
 
-        MField.SetField(multiRequest, "b", chatMessageContainer);
         MField.SetField(multiRequest, "a", session);
+        MField.SetField(multiRequest, "b", chatMessageContainer);
+        MField.SetField(multiRequest, "c", uinContainer);
+        MField.SetField(multiRequest, "d", struct);
+        MField.SetField(multiRequest, "e", structContainer);
 
         Object controller = MMethod.CallMethodNoParam(HookEnv.AppInterface, "getMultiMsgController", MClass.loadClass("com.tencent.mobileqq.multimsg.MultiMsgController"));
         XPBridge.HookBeforeOnce(MMethod.FindMethod(MClass.loadClass("com.tencent.mobileqq.multimsg.MultiMsgController"), null, void.class, new Class[]{MClass.loadClass("com.tencent.mobileqq.pic.ae$a")}), param -> {
@@ -146,6 +146,6 @@ public class MsgApi_SendFakeMultiMsg {
                 QQMsgSender.sendStruct(session, QQMsgBuilder.build_struct(willSendResult));
             }
         });
-        MMethod.CallMethodSingle(controller, "r", void.class, multiRequest);
+        MMethod.CallMethodSingle(controller, HostInfo.getVerCode() >= QQVersion.QQ_8_9_25 ? "u" : "r", void.class, multiRequest);
     }
 }

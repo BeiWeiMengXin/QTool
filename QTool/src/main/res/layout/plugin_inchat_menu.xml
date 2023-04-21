@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="24sp"
-        android:text="下面是脚本添加的菜单"
+        android:text="下面是脚本添加的菜单(点击设置脚本)"
         android:textColor="@color/font_plugin" />
 
     <TextView

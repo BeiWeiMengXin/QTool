@@ -33,6 +33,7 @@ import cc.hicore.Utils.Utils;
 import cc.hicore.qtool.HookEnv;
 import cc.hicore.qtool.JavaPlugin.Controller.PluginController;
 import cc.hicore.qtool.JavaPlugin.Controller.PluginInfo;
+import cc.hicore.qtool.JavaPlugin.ListForm.JavaPluginAct;
 import cc.hicore.qtool.QQManager.QQEnvUtils;
 import cc.hicore.qtool.QQManager.QQGroupUtils;
 import cc.hicore.qtool.QQManager.QQGuildManager;
@@ -283,6 +284,8 @@ public class FloatWindowControl {
                 LinearLayout mList = findViewById(R.id.plugin_menu_list);
                 TextView sub_groupuin = findViewById(R.id.sub_groupuin);
                 String sub_title = "当前";
+
+                findViewById(R.id.sub_title).setOnClickListener(v -> JavaPluginAct.startActivity(Utils.getTopActivity()));
 
                 //从SessionInfo中获取当前的聊天窗口信息并显示,防止有时混群发送的问题
                 int type = QQSessionUtils.getSessionID(Session);

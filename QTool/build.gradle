@@ -2,6 +2,12 @@ plugins {
     id 'com.android.application'
 }
 
+def keyProps = new Properties()
+def keyPropsFile = rootProject.file('keystore/key.properties')
+if (keyPropsFile.exists()) { keyProps.load(new InputStreamReader(new FileInputStream(keyPropsFile), "UTF-8")) }
+
+println("" +keyPropsFile + keyPropsFile.exists() + keyProps['storeFile'])
+
 var commitCount = getGitHeadRefsSuffix()
 
 android {
@@ -20,18 +26,19 @@ android {
             versionCode Integer.parseInt("${commitCount}")
         }
 
+        versionCode Integer.parseInt(keyProps['versionCode'])
+        versionName "v${versionCode}(小黑子版)"
+
         println("versionName:${versionName}")
         println("versionCode:${versionCode}")
 
         multiDexEnabled false
         signingConfigs {
             release{
-                if (System.getenv("KEYSTORE_PATH") != null){
-                    storeFile = file(System.getenv("KEYSTORE_PATH"))
-                    storePassword = System.getenv("KEYSTORE_PASSWORD")
-                    keyAlias = System.getenv("KEY_ALIAS")
-                    keyPassword = System.getenv("KEY_PASSWORD")
-                }
+                keyAlias keyProps['keyAlias']
+                keyPassword keyProps['keyPassword']
+                storeFile keyProps['storeFile'] ? file(keyProps['storeFile']) : null
+                storePassword keyProps['storePassword']
                 enableV1Signing = true
                 enableV2Signing = true
                 enableV3Signing = true
@@ -55,6 +62,7 @@ android {
 
         }
         debug{
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -75,7 +83,10 @@ android {
     }
     android.applicationVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "QTool_v${versionCode}.apk"
+            if (buildType.name.toLowerCase().contains("release")) {
+                outputFileName = "QTool_${versionName}.apk"
+            }
+            else outputFileName = "QTool_v${versionCode}.apk"
         }
     }
 }
@@ -95,13 +106,14 @@ dependencies {
 
     implementation 'com.github.kyuubiran:EzXHelper:1.0.3'
 
-    def appCenterSdkVersion = '4.4.5'
-    implementation "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
-    implementation "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
+//    def appCenterSdkVersion = '4.4.5'
+//    implementation "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
+//    implementation "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
 
     implementation 'com.github.bumptech.glide:glide:4.13.2'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.13.1'
     implementation "com.airbnb.android:lottie:5.2.0"
 
-    implementation project(':dexkit-android')
+   // implementation project(':dexkit-android')
+    implementation 'org.luckypray:DexKit:1.1.4'
 }

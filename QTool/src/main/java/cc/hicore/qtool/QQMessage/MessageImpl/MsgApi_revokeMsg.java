@@ -59,7 +59,7 @@ public class MsgApi_revokeMsg {
     }
 
     @MethodScanner
-    @VerController(targetVer = QQVersion.QQ_8_9_0)
+    @VerController(targetVer = QQVersion.QQ_8_9_0, max_targetVer = QQVersion.QQ_8_9_23)
     public void getUpdateCache_890(MethodContainer container) {
         container.addMethod(MethodFinderBuilder.newFinderByString("get_update_cache", "--->>getBuddyMsgLastSeq: ", m -> {
             updateCache = m.getDeclaringClass();
@@ -67,5 +67,11 @@ public class MsgApi_revokeMsg {
         }));
         container.addMethod(MethodFinderBuilder.newFinderByString("getMethod_Before", "qq queryEmojiInfo: result:", m -> true));
         container.addMethod(MethodFinderBuilder.newFinderByMethodInvokingLinked("updateCache", "getMethod_Before", m -> m.getDeclaringClass().equals(updateCache) && ((Method) m).getReturnType().equals(void.class) && ((Method) m).getParameterCount() == 1 && ((Method) m).getParameterTypes()[0].equals(boolean.class)));
+    }
+
+    @MethodScanner
+    @VerController(targetVer = QQVersion.QQ_8_9_25)
+    public void getUpdateCache_8925(MethodContainer container) {
+        container.addMethod("updateCache", MMethod.FindMethod("com.tencent.mobileqq.service.h.e", "B2", void.class, new Class[]{boolean.class}));
     }
 }
