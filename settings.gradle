@@ -19,10 +19,10 @@ project(':XPopup').projectDir = new File(rootDir, 'libs/XPopup/library/')
 include ':beanshell20b6'
 project(':beanshell20b6').projectDir = new File(rootDir, 'libs/BeanShell/beanshell20b6/')
 
-include ':dexkit'
-include ':dexkit-android'
-
-project(':dexkit').projectDir = new File(rootDir, 'libs/DexKit/dexkit/')
-project(':dexkit-android').projectDir = new File(rootDir, 'libs/DexKit/dexkit-android/')
+//include ':dexkit'
+//include ':dexkit-android'
+//
+//project(':dexkit').projectDir = new File(rootDir, 'libs/DexKit/dexkit/')
+//project(':dexkit-android').projectDir = new File(rootDir, 'libs/DexKit/dexkit-android/')
 
 

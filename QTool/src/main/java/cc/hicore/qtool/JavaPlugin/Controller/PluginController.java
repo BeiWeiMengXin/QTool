@@ -28,7 +28,7 @@ import cc.hicore.qtool.QQManager.QQEnvUtils;
 import cc.hicore.qtool.QQMessage.QQSessionUtils;
 
 public class PluginController {
-    private static final HashMap<String, PluginInfo> runningInfo = new HashMap<>();
+    public static final HashMap<String, PluginInfo> runningInfo = new HashMap<>();
 
     //添加一个菜单项目到脚本信息中
     public static String AddItem(String PluginVerifyID, String ItemName, String Callback, int type) {
@@ -284,6 +284,8 @@ public class PluginController {
         space.setMethod("sendPackMsg", new BshMethod(PluginMethod.class.getMethod("sendPackMsg", String.class, String.class, String.class, String.class, String.class, String.class), env));
         space.setMethod("sendPackMsg", new BshMethod(PluginMethod.class.getMethod("sendPackMsg", String.class, String.class, String.class, String.class, String.class, String.class, String.class), env));
         space.setMethod("sendPackMsg", new BshMethod(PluginMethod.class.getMethod("sendPackMsg", String.class, String.class, String.class, String.class, List.class, String.class, String.class), env));
+
+        space.setMethod("OpenJavaPluginAct", new BshMethod(PluginMethod.class.getMethod("OpenJavaPluginAct"), env));
     }
 
     //这里负责真正加载脚本代码,会把在内存中的脚本代码进行加载并注入必要的环境信息

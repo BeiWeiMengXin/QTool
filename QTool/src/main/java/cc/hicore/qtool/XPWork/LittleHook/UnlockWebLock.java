@@ -1,5 +1,8 @@
 package cc.hicore.qtool.XPWork.LittleHook;
 
+import android.os.Bundle;
+
+import java.lang.reflect.Method;
 import java.net.URLDecoder;
 
 import cc.hicore.HookItemLoader.Annotations.MethodScanner;
@@ -9,12 +12,13 @@ import cc.hicore.HookItemLoader.Annotations.XPExecutor;
 import cc.hicore.HookItemLoader.Annotations.XPItem;
 import cc.hicore.HookItemLoader.bridge.BaseXPExecutor;
 import cc.hicore.HookItemLoader.bridge.MethodContainer;
+import cc.hicore.HookItemLoader.bridge.MethodFinderBuilder;
 import cc.hicore.HookItemLoader.bridge.UIInfo;
-import cc.hicore.ReflectUtils.MClass;
-import cc.hicore.ReflectUtils.MMethod;
+import cc.hicore.Utils.Utils;
 
 @XPItem(name = "解除风险网址拦截", itemType = XPItem.ITEM_Hook, proc = XPItem.PROC_ALL)
 public class UnlockWebLock {
+    String last;
     private static String GetStringMiddle(String str, String before, String after) {
         int index1 = str.indexOf(before);
         if (index1 == -1) return null;
@@ -37,23 +41,39 @@ public class UnlockWebLock {
     @VerController
     @MethodScanner
     public void getHookMethod(MethodContainer container) {
-        container.addMethod("hook", MMethod.FindMethod(MClass.loadClass("com.tencent.smtt.sdk.WebView"), "loadUrl", void.class, new Class[]{
-                String.class
-        }));
+        container.addMethod(MethodFinderBuilder.newFinderByString("hook", "com.tencent.biz.troop.TroopMemberApiService", m -> ((Method) m).getReturnType().equals(void.class) && ((Method) m).getParameterCount() == 2 && ((Method) m).getParameterTypes()[1].equals(Bundle.class)));
     }
 
     @VerController
     @XPExecutor(methodID = "hook")
     public BaseXPExecutor worker() {
         return param -> {
-            String loadUrl = (String) param.args[0];
-            if (loadUrl.startsWith("https://c.pc.qq.com/middlem.html?") || loadUrl.startsWith("https://c.pc.qq.com/index.html?")) {
-                String RedictUrl = GetStringMiddle(loadUrl, "url=", "&");
-                if (RedictUrl != null) {
-                    String SourceUrl = URLDecoder.decode(RedictUrl);
-                    param.args[0] = SourceUrl;
-                }
+            int id = ((Integer) param.args[0]);
+            if (id != 121) return;
+
+            Bundle bundle = (Bundle) param.args[1];
+            if (bundle == null) return;
+
+            int jumpResult = bundle.getInt("jumpResult", 0);
+            if (jumpResult == 0) return;
+
+            String jumpUrl = bundle.getString("jumpUrl", "");
+            String RedirectUrl = URLDecoder.decode(GetStringMiddle(jumpUrl, "url=", "&"), "UTF-8");
+            if (RedirectUrl == null) return;
+
+            if (!RedirectUrl.equals(last)) {
+                last = RedirectUrl;
+                Utils.ShowToast("已解除拦截");
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(1000);
+                        last = null;
+                    } catch (InterruptedException ignored) {
+                    }
+                });
             }
+            bundle.putInt("jumpResult", 0);
+            bundle.putString("jumpUrl", "");
         };
     }
 }

@@ -9,6 +9,7 @@ import java.util.Locale;
 
 import cc.hicore.LogUtils.LogUtils;
 import cc.hicore.Utils.Utils;
+import cc.hicore.qtool.JavaPlugin.ListForm.JavaPluginAct;
 import cc.hicore.qtool.QQManager.QQEnvUtils;
 import cc.hicore.qtool.QQManager.QQGroupManager;
 import cc.hicore.qtool.QQManager.QQTicketManager;
@@ -355,4 +356,9 @@ public class PluginMethod {
         }
         return LoadJarHelper.loadJar(JarPath);
     }
+
+    public void OpenJavaPluginAct() {
+        JavaPluginAct.startActivity(GetActivity());
+    }
+
 }

@@ -9,9 +9,6 @@ import android.os.Looper;
 import android.text.TextUtils;
 
 import com.github.kyuubiran.ezxhelper.init.EzXHelperInit;
-import com.microsoft.appcenter.AppCenter;
-import com.microsoft.appcenter.analytics.Analytics;
-import com.microsoft.appcenter.crashes.Crashes;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -20,10 +17,7 @@ import bsh.classpath.BshLoaderManager;
 import cc.hicore.ConfigUtils.GlobalConfig;
 import cc.hicore.HookItemLoader.bridge.QQVersion;
 import cc.hicore.HookItemLoader.core.CoreLoader;
-import cc.hicore.LogUtils.LogUtils;
-import cc.hicore.ReflectUtils.MClass;
 import cc.hicore.ReflectUtils.ResUtils;
-import cc.hicore.ReflectUtils.XPBridge;
 import cc.hicore.Utils.Utils;
 import cc.hicore.qtool.BuildConfig;
 import cc.hicore.qtool.CrashHandler.LogcatCatcher;
@@ -143,13 +137,13 @@ public class EnvHook {
     }
 
     private static void InitAppCenter() {
-        try {
-            if (!HookEnv.IsMainProcess) return;
-            AppCenter.start(HookEnv.Application, "6f119935-286d-4a6b-b9e4-c9f18513dbf8",
-                    Analytics.class, Crashes.class);
-        } catch (Exception e) {
-            LogUtils.error("AppCenter", e);
-        }
+//        try {
+//            if (!HookEnv.IsMainProcess) return;
+//            AppCenter.start(HookEnv.Application, "6f119935-286d-4a6b-b9e4-c9f18513dbf8",
+//                    Analytics.class, Crashes.class);
+//        } catch (Exception e) {
+//            LogUtils.error("AppCenter", e);
+//        }
 
 
     }
